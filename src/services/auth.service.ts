@@ -3,11 +3,11 @@ import { UserRepository } from '../repository/user.respository';
 import { AuthResponse } from '../types/response';
 
 export class AuthService {
-  constructor(private UserRepository: UserRepository) {}
+  constructor(private userRepository: UserRepository) {}
 
   async login(loginDetails: LoginDto) {
     try {
-      const existingUser = await this.UserRepository.findByName(
+      const existingUser = await this.userRepository.findByName(
         loginDetails.name
       );
       if (!existingUser) {
@@ -39,7 +39,7 @@ export class AuthService {
 
   async register(registerDetails: CreateUserDto): Promise<AuthResponse> {
     try {
-      const existingUser = await this.UserRepository.findByName(
+      const existingUser = await this.userRepository.findByName(
         registerDetails.name
       );
       if (existingUser) {
@@ -48,7 +48,7 @@ export class AuthService {
           error: 'User already exists with this name',
         };
       }
-      const user = await this.UserRepository.create({
+      await this.userRepository.create({
         name: registerDetails.name,
         password: registerDetails.password,
       });

@@ -8,7 +8,7 @@ const authService = new AuthService(userRepo);
 const authController = new AuthController(authService);
 const router = express.Router();
 
-router.post('/login', authController.login);
-router.post('/register', authController.register);
+router.post('/login', (req, res) => authController.login(req, res));
+router.post('/register', (req, res) => authController.register(req, res));
 
 export default router;
