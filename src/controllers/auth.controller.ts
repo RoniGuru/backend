@@ -1,32 +1,31 @@
-import { CreateUserDto, LoginDto, User } from '../model/user';
+import { CreateUserDto, LoginDto } from '../types/user';
 import { Request, Response } from 'express';
+import { AuthService } from '../services/auth.service';
 
 export class AuthController {
-  private fake: User[] = [{ name: 'test', password: 'test' }];
+  constructor(private AuthService: AuthService) {}
 
-  login = async (req: Request, res: Response) => {
+  async login(req: Request, res: Response) {
     const details: LoginDto = req.body;
     console.log('logging in', details);
+    const response = await this.AuthService.login(details);
 
-    try {
-      const user = this.fake.find((u) => u.name === details.name);
-      if (!user) {
-        console.log('invalid');
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-      res.status(200).json({ message: 'logged in' });
-    } catch {
-      res.status(500).json({ error: 'failed to login user' });
+    if (response.success) {
+      return res.status(200).json(response.user);
+    } else {
+      return res.status(400).json(response.error);
     }
-  };
+  }
 
   register = async (req: Request, res: Response) => {
     const details: CreateUserDto = req.body;
-    try {
-      this.fake.push(details);
-      res.status(200).json({ message: 'user registered' });
-    } catch {
-      res.status(500).json({ error: 'failed to register user' });
+    console.log('logging in', details);
+    const response = await this.AuthService.register(details);
+
+    if (response.success) {
+      return res.status(200);
+    } else {
+      return res.status(400).json(response.error);
     }
   };
 }
