@@ -5,7 +5,7 @@ import { AuthService } from '../services/auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  async login(req: Request, res: Response) {
+  login = async (req: Request, res: Response) => {
     try {
       const details: LoginDto = req.body;
       console.log('logging ins', details);
@@ -28,7 +28,7 @@ export class AuthController {
         message: errorMessage,
       });
     }
-  }
+  };
 
   register = async (req: Request, res: Response) => {
     const details: CreateUserDto = req.body;
