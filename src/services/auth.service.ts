@@ -1,9 +1,25 @@
 import { CreateUserDto, LoginDto } from '../types/user';
 import { UserRepository } from '../repository/user.respository';
 import { AuthResponse } from '../types/response';
+import bcrypt from 'bcrypt';
 
 export class AuthService {
   constructor(private userRepository: UserRepository) {}
+
+  async hashPassword(password: string): Promise<string> {
+    if (!process.env.SALT) {
+      throw new Error('SALT environment variable is not defined');
+    }
+    const salt = Number(process.env.SALT);
+    return await bcrypt.hash(password, salt);
+  }
+
+  async verifyPassword(
+    password: string,
+    hashedPassword: string
+  ): Promise<Boolean> {
+    return await bcrypt.compare(password, hashedPassword);
+  }
 
   async login(loginDetails: LoginDto) {
     try {
@@ -17,7 +33,12 @@ export class AuthService {
         };
       }
 
-      if (existingUser.password == loginDetails.password) {
+      const compare = await this.verifyPassword(
+        loginDetails.password,
+        existingUser.password
+      );
+
+      if (compare) {
         return {
           success: true,
           user: { id: existingUser.id, name: existingUser.name },
@@ -48,9 +69,10 @@ export class AuthService {
           error: 'User already exists with this name',
         };
       }
+      const hashedPassword = await this.hashPassword(registerDetails.password);
       await this.userRepository.create({
         name: registerDetails.name,
-        password: registerDetails.password,
+        password: hashedPassword,
       });
 
       return {

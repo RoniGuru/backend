@@ -1,8 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import PublicRoutes from './routes/public.routes';
+import dotenv from 'dotenv';
 
 const app = express();
+
+dotenv.config({ path: '.env.development' });
 
 app.use(cors());
 app.use(express.json());
