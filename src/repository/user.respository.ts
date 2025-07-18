@@ -11,7 +11,7 @@ export class UserRepository {
 
   async create(userData: CreateUserDto): Promise<User> {
     return await this.client.user.create({
-      data: userData,
+      data: { ...userData, token_hash: '' },
     });
   }
 
@@ -25,5 +25,9 @@ export class UserRepository {
     return await this.client.user.findUnique({
       where: { id },
     });
+  }
+
+  async update(id: number, userData: Partial<User>): Promise<Boolean> {
+    return false;
   }
 }

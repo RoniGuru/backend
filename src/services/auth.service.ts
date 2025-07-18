@@ -2,23 +2,39 @@ import { CreateUserDto, LoginDto } from '../types/user';
 import { UserRepository } from '../repository/user.respository';
 import { AuthResponse } from '../types/response';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export class AuthService {
   constructor(private userRepository: UserRepository) {}
 
-  async hashPassword(password: string): Promise<string> {
+  generateAccessToken(name: string) {
+    if (!process.env.ACCESS_TOKEN_SECRET) {
+      throw new Error('ACCESS TOKEN SECRETe is not defined');
+    }
+    return jwt.sign({ name: name }, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: '1hr',
+    });
+  }
+
+  generateRefreshToken(name: string) {
+    if (!process.env.REFRESH_TOKEN_SECRET) {
+      throw new Error('REFRESH TOKEN SECRET variable is not defined');
+    }
+    return jwt.sign({ name: name }, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: '30 days',
+    });
+  }
+
+  async hash(value: string): Promise<string> {
     if (!process.env.SALT) {
       throw new Error('SALT environment variable is not defined');
     }
     const salt = Number(process.env.SALT);
-    return await bcrypt.hash(password, salt);
+    return await bcrypt.hash(value, salt);
   }
 
-  async verifyPassword(
-    password: string,
-    hashedPassword: string
-  ): Promise<Boolean> {
-    return await bcrypt.compare(password, hashedPassword);
+  async verifyHash(value: string, hashedValue: string): Promise<Boolean> {
+    return await bcrypt.compare(value, hashedValue);
   }
 
   async login(loginDetails: LoginDto) {
@@ -33,7 +49,7 @@ export class AuthService {
         };
       }
 
-      const compare = await this.verifyPassword(
+      const compare = await this.verifyHash(
         loginDetails.password,
         existingUser.password
       );
@@ -69,7 +85,7 @@ export class AuthService {
           error: 'User already exists with this name',
         };
       }
-      const hashedPassword = await this.hashPassword(registerDetails.password);
+      const hashedPassword = await this.hash(registerDetails.password);
       await this.userRepository.create({
         name: registerDetails.name,
         password: hashedPassword,
