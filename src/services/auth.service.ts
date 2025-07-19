@@ -7,20 +7,20 @@ import jwt from 'jsonwebtoken';
 export class AuthService {
   constructor(private userRepository: UserRepository) {}
 
-  generateAccessToken(name: string) {
+  generateAccessToken(userData: { name: string; id: number }) {
     if (!process.env.ACCESS_TOKEN_SECRET) {
       throw new Error('ACCESS TOKEN SECRETe is not defined');
     }
-    return jwt.sign({ name: name }, process.env.ACCESS_TOKEN_SECRET, {
+    return jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: '1hr',
     });
   }
 
-  generateRefreshToken(name: string) {
+  generateRefreshToken(userData: { name: string; id: number }) {
     if (!process.env.REFRESH_TOKEN_SECRET) {
       throw new Error('REFRESH TOKEN SECRET variable is not defined');
     }
-    return jwt.sign({ name: name }, process.env.REFRESH_TOKEN_SECRET, {
+    return jwt.sign(userData, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: '30 days',
     });
   }
@@ -55,7 +55,10 @@ export class AuthService {
       );
 
       if (compare) {
-        const refreshToken = this.generateRefreshToken(existingUser.name);
+        const refreshToken = this.generateRefreshToken({
+          name: existingUser.name,
+          id: existingUser.id,
+        });
         const update = await this.userRepository.update(existingUser.id, {
           refresh_token: refreshToken,
           refresh_token_expiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),

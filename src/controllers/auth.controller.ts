@@ -21,9 +21,10 @@ export class AuthController {
           maxAge: cookieMaxAge,
         });
 
-        const accessToken = this.authService.generateAccessToken(
-          response.user.name
-        );
+        const accessToken = this.authService.generateAccessToken({
+          name: response.user.name,
+          id: response.user.id,
+        });
 
         const userData = {
           id: response.user.id,
@@ -73,7 +74,10 @@ export class AuthController {
       return res.status(401).json({ error: 'refresh token  not similar' });
     }
 
-    const newToken = this.authService.generateAccessToken(user.name);
+    const newToken = this.authService.generateAccessToken({
+      name: user.name,
+      id: user.id,
+    });
 
     return res.status(200).json({
       message: 'Token refreshed',
