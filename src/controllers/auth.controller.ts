@@ -59,4 +59,25 @@ export class AuthController {
       return res.status(400).json(response.error);
     }
   };
+
+  token = async (req: Request, res: Response) => {
+    if (req.cookies.refresh_token == null) {
+      return res.status(401).json({ error: 'no refresh token' });
+    }
+    const user = await this.authService.findUser(Number(req.params.id));
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (req.cookies.refreshToken != user.refresh_token) {
+      return res.status(401).json({ error: 'refresh token  not similar' });
+    }
+
+    const newToken = this.authService.generateAccessToken(user.name);
+
+    return res.status(200).json({
+      message: 'Token refreshed',
+      token: newToken,
+    });
+  };
 }
