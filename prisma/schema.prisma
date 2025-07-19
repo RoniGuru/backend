@@ -18,5 +18,7 @@ model User{
     id Int @id @default(autoincrement())
     name String @unique
     password String
-    token_hash String  @default("")
+    refresh_token String  @default("")
+    refresh_token_expiry DateTime?
+    created_at DateTime @default(now())
 }

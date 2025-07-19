@@ -12,8 +12,20 @@ export class AuthController {
 
       const response = await this.authService.login(details);
 
-      if (response.success) {
-        return res.status(200).json(response.user);
+      if (response.success && response.user) {
+        const cookieMaxAge =
+          response.user.refresh_token_expiry!.getTime() - Date.now();
+        res.cookie('refresh_token', response.user.refresh_token, {
+          httpOnly: true,
+          sameSite: 'strict',
+          maxAge: cookieMaxAge,
+        });
+
+        const access_token = this.authService.generateAccessToken(
+          response.user.name
+        );
+
+        return res.status(200).json({ user: response.user, access_token });
       } else {
         return res.status(400).json(response.error);
       }

@@ -56,9 +56,9 @@ export class AuthService {
 
       if (compare) {
         const refreshToken = this.generateRefreshToken(existingUser.name);
-        const hashedRefresh = await this.hash(refreshToken);
         const update = await this.userRepository.update(existingUser.id, {
-          token_hash: hashedRefresh,
+          refresh_token: refreshToken,
+          refresh_token_expiry: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         });
 
         return {
@@ -66,7 +66,8 @@ export class AuthService {
           user: {
             id: existingUser.id,
             name: existingUser.name,
-            token_hash: update?.token_hash,
+            refresh_token: refreshToken,
+            refresh_token_expiry: update?.refresh_token_expiry,
           },
         };
       } else {

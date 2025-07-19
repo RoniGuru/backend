@@ -11,7 +11,7 @@ export class UserRepository {
 
   async create(userData: CreateUserDto): Promise<User> {
     return await this.client.user.create({
-      data: { ...userData, token_hash: '' },
+      data: { ...userData },
     });
   }
 
