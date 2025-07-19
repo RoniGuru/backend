@@ -55,9 +55,19 @@ export class AuthService {
       );
 
       if (compare) {
+        const refreshToken = this.generateRefreshToken(existingUser.name);
+        const hashedRefresh = await this.hash(refreshToken);
+        const update = await this.userRepository.update(existingUser.id, {
+          token_hash: hashedRefresh,
+        });
+
         return {
           success: true,
-          user: { id: existingUser.id, name: existingUser.name },
+          user: {
+            id: existingUser.id,
+            name: existingUser.name,
+            token_hash: update?.token_hash,
+          },
         };
       } else {
         return {
