@@ -68,6 +68,7 @@ export class AuthService {
             name: existingUser.name,
             refresh_token: refreshToken,
             refresh_token_expiry: update?.refresh_token_expiry,
+            created_at: existingUser.created_at,
           },
         };
       } else {

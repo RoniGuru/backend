@@ -21,11 +21,17 @@ export class AuthController {
           maxAge: cookieMaxAge,
         });
 
-        const access_token = this.authService.generateAccessToken(
+        const accessToken = this.authService.generateAccessToken(
           response.user.name
         );
 
-        return res.status(200).json({ user: response.user, access_token });
+        const userData = {
+          id: response.user.id,
+          name: response.user.name,
+          created_at: response.user.created_at,
+        };
+
+        return res.status(200).json({ user: userData, accessToken });
       } else {
         return res.status(400).json(response.error);
       }
