@@ -8,7 +8,7 @@ export class UserController {
   get = async (req: Request, res: Response) => {
     try {
       const details: UpdateUserDto = req.body;
-      const response = await this.userService.getUser(details.id);
+      const response = await this.userService.getUser(Number(req.params.id));
       //if user found
       if (response) {
         return res.status(200).json({
@@ -31,10 +31,11 @@ export class UserController {
   update = async (req: Request, res: Response) => {
     try {
       const details: UpdateUserDto = req.body;
-      const response = await this.userService.getUser(details.id);
+      const id = Number(req.params.id);
+      const response = await this.userService.getUser(id);
       //if user found
       if (response) {
-        const update = await this.userService.updateUser(details.id, {
+        const update = await this.userService.updateUser(id, {
           name: details.name,
           password: details.password,
         });
