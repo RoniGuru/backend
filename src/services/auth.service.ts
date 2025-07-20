@@ -117,8 +117,4 @@ export class AuthService {
       };
     }
   }
-
-  async findUser(id: number) {
-    return await this.userRepository.findById(id);
-  }
 }
