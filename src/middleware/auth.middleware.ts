@@ -2,26 +2,64 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { jwtUserPayload } from '../types/response';
 
-function verifyToken(req: Request, res: Response, next: NextFunction) {
+function authenticate(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
   const refreshToken = req.cookies.refreshToken;
 
   if (!token) {
-    res.status(401).json({ error: 'Access token required' });
-    return;
+    return res.status(401).json({ error: 'Access token required' });
   }
-  //verify access token
+  // Verify toke secret
   const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
-  if (!accessTokenSecret) {
+  const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+
+  if (!accessTokenSecret || !refreshTokenSecret) {
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
   jwt.verify(token, accessTokenSecret, (err, decoded) => {
     if (err) {
-      return res.status(403).json({ message: 'Invalid or expired token' });
+      if (!refreshToken) {
+        return res.status(401).json({
+          error: 'Access token expired and no refresh token provided',
+        });
+      }
+
+      // Verify refresh token
+      jwt.verify(
+        refreshToken,
+        refreshTokenSecret,
+        (
+          refreshErr: jwt.VerifyErrors | null,
+          refreshDecoded: string | jwt.JwtPayload | undefined
+        ) => {
+          if (refreshErr) {
+            return res
+              .status(401)
+              .json({ error: 'Invalid refresh token. Please login again.' });
+          }
+
+          // Generate new access token
+          const payload = refreshDecoded as jwtUserPayload;
+          const newAccessToken = jwt.sign(
+            { id: payload.id, name: payload.name },
+            accessTokenSecret,
+            { expiresIn: '1hr' }
+          );
+
+          // Set the new token in response header
+          res.setHeader('Authorization', `Bearer ${newAccessToken}`);
+
+          // Set user data and continue
+          req.user = payload;
+          next();
+        }
+      );
+    } else {
+      // Access token is valid
+      req.user = decoded as jwtUserPayload;
+      next();
     }
-    req.user = decoded as jwtUserPayload;
-    next();
   });
 }
