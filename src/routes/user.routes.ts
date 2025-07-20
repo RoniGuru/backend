@@ -11,3 +11,4 @@ const router = express.Router();
 
 router.get('/:id', authenticate, userController.get);
 router.put('/:id', authenticate, userController.get);
+export default router;

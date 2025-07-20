@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import PublicRoutes from './routes/public.routes';
+import UserRoutes from './routes/user.routes';
 import dotenv from 'dotenv';
 
 const app = express();
@@ -15,6 +16,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/', PublicRoutes);
+app.use('/user', UserRoutes);
 
 const PORT = process.env.PORT || 3000;
 
