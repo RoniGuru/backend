@@ -1,4 +1,4 @@
-import { CreateUserDto, LoginDto } from '../types/user';
+import { UserDto } from '../types/user';
 import { UserRepository } from '../repository/user.respository';
 import { AuthResponse } from '../types/response';
 import bcrypt from 'bcrypt';
@@ -37,7 +37,7 @@ export class AuthService {
     return await bcrypt.compare(value, hashedValue);
   }
 
-  async login(loginDetails: LoginDto) {
+  async login(loginDetails: UserDto) {
     try {
       const existingUser = await this.userRepository.findByName(
         loginDetails.name
@@ -89,7 +89,7 @@ export class AuthService {
     }
   }
 
-  async register(registerDetails: CreateUserDto): Promise<AuthResponse> {
+  async register(registerDetails: UserDto): Promise<AuthResponse> {
     try {
       const existingUser = await this.userRepository.findByName(
         registerDetails.name
@@ -116,5 +116,9 @@ export class AuthService {
         error: 'Registration failed. Please try again.',
       };
     }
+  }
+
+  async findUser(id: number) {
+    return await this.userRepository.findById(id);
   }
 }

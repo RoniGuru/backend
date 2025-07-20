@@ -1,5 +1,5 @@
 import { UserRepository } from '../repository/user.respository';
-import { UpdateUserDto, userData } from '../types/user';
+import { UserDto, userData } from '../types/user';
 
 export class UserService {
   constructor(private userRepository: UserRepository) {}
@@ -18,7 +18,7 @@ export class UserService {
     }
   }
 
-  async updateUser(id: number, userData: Partial<UpdateUserDto>) {
+  async updateUser(id: number, userData: Partial<UserDto>) {
     return this.userRepository.update(id, userData);
   }
 }

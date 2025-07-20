@@ -1,4 +1,4 @@
-import { CreateUserDto, LoginDto } from '../types/user';
+import { UserDto } from '../types/user';
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
 
@@ -7,7 +7,7 @@ export class AuthController {
 
   login = async (req: Request, res: Response) => {
     try {
-      const details: LoginDto = req.body;
+      const details: UserDto = req.body;
       console.log('logging ins', details);
 
       const response = await this.authService.login(details);
@@ -50,7 +50,7 @@ export class AuthController {
   };
 
   register = async (req: Request, res: Response) => {
-    const details: CreateUserDto = req.body;
+    const details: UserDto = req.body;
     console.log('register', details);
     const response = await this.authService.register(details);
 

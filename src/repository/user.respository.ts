@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma';
-import { CreateUserDto } from '../types/user';
+import { UserDto } from '../types/user';
 import { User } from '../generated/prisma';
 
 //handles interaction with database
@@ -9,7 +9,7 @@ export class UserRepository {
     this.client = prisma;
   }
 
-  async create(userData: CreateUserDto): Promise<User> {
+  async create(userData: UserDto): Promise<User> {
     return await this.client.user.create({
       data: { ...userData },
     });
