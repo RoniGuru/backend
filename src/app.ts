@@ -3,12 +3,21 @@ import cors from 'cors';
 import PublicRoutes from './routes/public.routes';
 import UserRoutes from './routes/user.routes';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
 dotenv.config({ path: '.env.development' });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Your frontend URL (not 3000!)
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+app.use(cookieParser());
 app.use(express.json());
 
 app.get('/health', (req, res) => {

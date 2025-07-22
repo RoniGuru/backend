@@ -5,7 +5,7 @@ import { jwtUserPayload } from '../types/response';
 export function authenticate(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-  const refreshToken = req.cookies.refreshToken;
+  const refreshToken = req.cookies.refresh_token;
 
   const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
   const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;

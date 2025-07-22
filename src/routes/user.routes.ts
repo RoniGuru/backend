@@ -10,5 +10,5 @@ const userController = new UserController(userService);
 const router = express.Router();
 
 router.get('/:id', authenticate, userController.get);
-router.put('/:id', authenticate, userController.get);
+router.put('/:id', authenticate, userController.update);
 export default router;

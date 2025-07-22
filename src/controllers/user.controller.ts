@@ -1,5 +1,5 @@
 import { UserService } from '../services/user.service';
-import { UpdateUserDto, UserDto } from '../types/user';
+import { UpdateUserDto } from '../types/user';
 import { Request, Response } from 'express';
 
 export class UserController {
@@ -7,7 +7,6 @@ export class UserController {
 
   get = async (req: Request, res: Response) => {
     try {
-      const details: UpdateUserDto = req.body;
       const response = await this.userService.getUser(Number(req.params.id));
       //if user found
       if (response) {
