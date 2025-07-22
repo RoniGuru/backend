@@ -84,4 +84,17 @@ export class AuthController {
       token: newToken,
     });
   };
+
+  logout = async (req: Request, res: Response) => {
+    const user = await this.authService.findUser(Number(req.params.id));
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    const result = await this.authService.clearRefresh(user.id);
+    if (result) {
+      return res.status(200).json({ message: 'user logged out' });
+    } else {
+      return res.status(500).json({ message: 'user not logged out' });
+    }
+  };
 }

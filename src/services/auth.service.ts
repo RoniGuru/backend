@@ -121,4 +121,11 @@ export class AuthService {
   async findUser(id: number) {
     return await this.userRepository.findById(id);
   }
+
+  async clearRefresh(id: number) {
+    return await this.userRepository.update(id, {
+      refresh_token: '',
+      refresh_token_expiry: null,
+    });
+  }
 }
