@@ -7,10 +7,6 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
   const refreshToken = req.cookies.refreshToken;
 
-  if (!token) {
-    return res.status(401).json({ error: 'Access token required' });
-  }
-  // Verify toke secret
   const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
   const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 
@@ -18,6 +14,41 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
+  // If no access token, check refresh token
+  if (!token) {
+    if (!refreshToken) {
+      return res.status(401).json({ error: 'No refresh token provided' });
+    }
+
+    // create new access token
+    return jwt.verify(
+      refreshToken,
+      refreshTokenSecret,
+      (
+        err: jwt.VerifyErrors | null,
+        decoded: string | jwt.JwtPayload | undefined
+      ) => {
+        if (err) {
+          return res
+            .status(401)
+            .json({ error: 'Invalid refresh token. Please login again.' });
+        }
+
+        const payload = decoded as jwtUserPayload;
+        const newAccessToken = jwt.sign(
+          { id: payload.id, name: payload.name },
+          accessTokenSecret,
+          { expiresIn: '1hr' }
+        );
+
+        res.setHeader('Authorization', `Bearer ${newAccessToken}`);
+        req.user = payload;
+        next();
+      }
+    );
+  }
+
+  // Try access token first
   jwt.verify(token, accessTokenSecret, (err, decoded) => {
     if (err) {
       if (!refreshToken) {
@@ -25,9 +56,8 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
           error: 'Access token expired and no refresh token provided',
         });
       }
-
-      // Verify refresh token
-      jwt.verify(
+      // Access token invalid, try refresh token
+      return jwt.verify(
         refreshToken,
         refreshTokenSecret,
         (
@@ -40,7 +70,6 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
               .json({ error: 'Invalid refresh token. Please login again.' });
           }
 
-          // Generate new access token
           const payload = refreshDecoded as jwtUserPayload;
           const newAccessToken = jwt.sign(
             { id: payload.id, name: payload.name },
@@ -48,10 +77,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
             { expiresIn: '1hr' }
           );
 
-          // Set the new token in response header
           res.setHeader('Authorization', `Bearer ${newAccessToken}`);
-
-          // Set user data and continue
           req.user = payload;
           next();
         }
