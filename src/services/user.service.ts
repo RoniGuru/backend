@@ -11,6 +11,7 @@ export class UserService {
         id: user.id,
         name: user.name,
         created_at: user.created_at,
+        high_score: user.high_score,
       };
       return userData;
     } else {

@@ -29,15 +29,12 @@ export class UserController {
   };
   update = async (req: Request, res: Response) => {
     try {
-      const details: UpdateUserDto = req.body;
+      const details: Partial<UpdateUserDto> = req.body;
       const id = Number(req.params.id);
       const response = await this.userService.getUser(id);
       //if user found
       if (response) {
-        const update = await this.userService.updateUser(id, {
-          name: details.name,
-          password: details.password,
-        });
+        const update = await this.userService.updateUser(id, details);
         //if update didnt work
         if (!update) {
           return res.status(404).json({ error: 'unable to update user' });
