@@ -44,6 +44,7 @@ export class UserController {
             id: update.id,
             name: update.name,
             created_at: update.created_at,
+            high_score: update.high_score,
           },
         });
       }
