@@ -12,7 +12,7 @@ export class AuthService {
       throw new Error('ACCESS TOKEN SECRETe is not defined');
     }
     return jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: '1hr',
+      expiresIn: '2s',
     });
   }
 
