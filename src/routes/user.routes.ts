@@ -11,4 +11,5 @@ const router = express.Router();
 
 router.get('/:id', authenticate, userController.get);
 router.put('/:id', authenticate, userController.update);
+router.put('/leaderboard', authenticate, userController.getLeaderboard);
 export default router;

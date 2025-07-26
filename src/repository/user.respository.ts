@@ -33,4 +33,17 @@ export class UserRepository {
       data: userData,
     });
   }
+
+  async leaderBoard() {
+    return await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        high_score: true,
+      },
+      where: { high_score: { gt: 0 } },
+      orderBy: { high_score: 'desc' },
+      take: 10,
+    });
+  }
 }

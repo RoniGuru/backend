@@ -22,4 +22,8 @@ export class UserService {
   async updateUser(id: number, userData: Partial<UserDto>) {
     return this.userRepository.update(id, userData);
   }
+
+  async getLeaderBoard() {
+    return this.userRepository.leaderBoard();
+  }
 }

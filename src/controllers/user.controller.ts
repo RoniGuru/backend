@@ -61,4 +61,25 @@ export class UserController {
       });
     }
   };
+
+  getLeaderboard = async (req: Request, res: Response) => {
+    try {
+      const response = await this.userService.getLeaderBoard();
+      //if user found
+      if (response) {
+        return res.status(200).json({ leaderboard: response });
+      }
+      return res.status(404).json({ error: 'leaderboard empty' });
+    } catch (error) {
+      console.error('User controller leaderboard error:', error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+
+      return res.status(500).json({
+        error: 'Internal server error',
+        message: errorMessage,
+      });
+    }
+  };
 }
