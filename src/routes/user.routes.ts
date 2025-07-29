@@ -9,7 +9,8 @@ const userService = new UserService(userRepo);
 const userController = new UserController(userService);
 const router = express.Router();
 
+router.get('/leaderboard', authenticate, userController.getLeaderboard);
 router.get('/:id', authenticate, userController.get);
 router.put('/:id', authenticate, userController.update);
-router.put('/leaderboard', authenticate, userController.getLeaderboard);
+
 export default router;
