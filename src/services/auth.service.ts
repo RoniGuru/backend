@@ -94,21 +94,28 @@ export class AuthService {
       const existingUser = await this.userRepository.findByName(
         registerDetails.name
       );
+
       if (existingUser) {
         return {
           success: false,
           error: 'User already exists with this name',
         };
       }
+
       const hashedPassword = await this.hash(registerDetails.password);
-      await this.userRepository.create({
+
+      const result = await this.userRepository.create({
         name: registerDetails.name,
         password: hashedPassword,
       });
-
-      return {
-        success: true,
-      };
+      console.log(result);
+      if (result) {
+        return {
+          success: true,
+        };
+      } else {
+        return { success: false };
+      }
     } catch (error) {
       console.error('Registration error:', error);
       return {

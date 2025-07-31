@@ -51,13 +51,12 @@ export class AuthController {
 
   register = async (req: Request, res: Response) => {
     const details: UserDto = req.body;
-    console.log('register', details);
-    const response = await this.authService.register(details);
-
-    if (response.success) {
-      return res.status(200);
+    const result = await this.authService.register(details);
+    console.log('result', result);
+    if (result.success) {
+      return res.status(200).json();
     } else {
-      return res.status(400).json(response.error);
+      return res.status(400).json(result.error);
     }
   };
 
