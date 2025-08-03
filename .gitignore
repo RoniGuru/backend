@@ -3,7 +3,8 @@ node_modules
 
 .env.development
 
-
+/dist
 
 prisma/dev.db
 .env.development
+.env.production

@@ -7,7 +7,8 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
-dotenv.config({ path: '.env.development' });
+const nodeEnv = process.env.NODE_ENV || 'development';
+dotenv.config({ path: `.env.${nodeEnv}` });
 
 app.use(
   cors({
@@ -30,5 +31,6 @@ app.use('/user', UserRoutes);
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
+  console.log('current mode ', nodeEnv);
   console.log(`Server running on port ${PORT}`);
 });
