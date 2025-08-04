@@ -4,11 +4,12 @@
   "main": "app.js",
   "scripts": {
     "dev": "dotenv -e .env.development  nodemon src/app.ts",
-    "build": "tsc &&  dotenv -e .env.production  npx prisma generate",
+    "build": "tsc &&  dotenv -e .env.production  npx prisma generate --no-engine",
     "start": "dotenv -e .env.production node dist/app.js",
     "prisma:generate:dev": "dotenv -e .env.development npx prisma generate",
     "prisma:generate:prod": "dotenv -e .env.production npx prisma generate",
-    "dev-studio": "dotenv -e .env.development npx prisma studio"
+    "dev-studio": "dotenv -e .env.development npx prisma studio",
+    "prod-studio": "dotenv -e .env.production npx prisma studio"
   },
   "keywords": [],
   "author": "",

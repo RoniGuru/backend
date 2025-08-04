@@ -11,7 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: 'http://localhost:5173', // Your frontend URL (not 3000!)
+    origin: process.env.FRONTEND_URL,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -31,6 +31,7 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log('url', process.env.DATABASE_URL);
+  console.log('url', process.env.FRONTEND_URL);
   console.log('prisma client', process.env.PRISMA_CLIENT_OUTPUT);
   console.log(`Server running on port ${PORT}`);
 });
