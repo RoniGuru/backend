@@ -5,10 +5,9 @@ import UserRoutes from './routes/user.routes';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 
-const app = express();
+dotenv.config();
 
-const nodeEnv = process.env.NODE_ENV || 'development';
-dotenv.config({ path: `.env.${nodeEnv}` });
+const app = express();
 
 app.use(
   cors({
@@ -31,6 +30,7 @@ app.use('/user', UserRoutes);
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log('current mode ', nodeEnv);
+  console.log('url', process.env.DATABASE_URL);
+  console.log('prisma client', process.env.PRISMA_CLIENT_OUTPUT);
   console.log(`Server running on port ${PORT}`);
 });

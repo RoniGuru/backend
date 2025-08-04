@@ -1,13 +1,14 @@
 {
-  "name": "backend",
+  "name": "wordblitz-backend",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development PRISMA_CLIENT_OUTPUT=../src/generated/prisma ts-node-dev --respawn --transpile-only src/app.ts",
-    "build": "tsc && cross-env PRISMA_CLIENT_OUTPUT=../dist/generated/prisma npx prisma generate",
-    "start": "cross-env NODE_ENV=production node dist/app.js",
-    "prisma:generate:dev": "cross-env PRISMA_CLIENT_OUTPUT=../src/generated/prisma npx prisma generate",
-    "prisma:generate:prod": "cross-env PRISMA_CLIENT_OUTPUT=../dist/generated/prisma npx prisma generate"
+    "dev": "dotenv -e .env.development  nodemon src/app.ts",
+    "build": "tsc &&  dotenv -e .env.production  npx prisma generate",
+    "start": "dotenv -e .env.production node dist/app.js",
+    "prisma:generate:dev": "dotenv -e .env.development npx prisma generate",
+    "prisma:generate:prod": "dotenv -e .env.production npx prisma generate",
+    "dev-studio": "dotenv -e .env.development npx prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "@types/node": "^24.0.13",
     "@types/sqlite3": "^5.1.0",
     "cross-env": "^10.0.0",
+    "dotenv-cli": "^10.0.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
