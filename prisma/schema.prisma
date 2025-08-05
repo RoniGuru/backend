@@ -9,12 +9,11 @@ generator client {
   output   = env("PRISMA_CLIENT_OUTPUT")
 }
 
-//dev
+
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
 
 model User{
     id Int @id @default(autoincrement())
