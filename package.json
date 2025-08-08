@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "dotenv -e .env.development  nodemon src/app.ts",
-    "build": "tsc &&   npx prisma generate --no-engine",
+    "build": "tsc && dotenv -e .env.development  npx prisma generate --no-engine",
     "start": " node dist/app.js",
     "prisma:generate:dev": "dotenv -e .env.development npx prisma generate",
     "prisma:generate:prod": " npx prisma generate",

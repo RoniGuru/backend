@@ -69,6 +69,7 @@ export class AuthService {
           user: {
             id: existingUser.id,
             name: existingUser.name,
+            high_score: existingUser.high_score,
             refresh_token: refreshToken,
             refresh_token_expiry: update?.refresh_token_expiry,
             created_at: existingUser.created_at,

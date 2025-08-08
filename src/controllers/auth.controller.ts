@@ -29,6 +29,7 @@ export class AuthController {
         const userData = {
           id: response.user.id,
           name: response.user.name,
+          high_score: response.user.high_score,
           created_at: response.user.created_at,
         };
 

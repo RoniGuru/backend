@@ -8,3 +8,4 @@ node_modules
 prisma/dev.db
 .env.development
 .env.production
+envtext.txt
