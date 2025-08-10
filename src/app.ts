@@ -27,9 +27,9 @@ app.get('/health', (req, res) => {
 app.use('/', PublicRoutes);
 app.use('/user', UserRoutes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log('url', process.env.DATABASE_URL);
   console.log('url', process.env.FRONTEND_URL);
   console.log('prisma client', process.env.PRISMA_CLIENT_OUTPUT);

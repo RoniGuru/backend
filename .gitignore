@@ -9,3 +9,5 @@ prisma/dev.db
 .env.development
 .env.production
 envtext.txt
+.env
+steps.txt
