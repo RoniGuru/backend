@@ -14,8 +14,9 @@ RUN npm run prisma:generate:prod
 
 RUN npm run build 
 
-ENV PORT=5000
 
-EXPOSE 5000
+ENV PORT=3000
+
+EXPOSE 3000
 
 CMD ["npm","start"]

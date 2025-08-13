@@ -1,0 +1,20 @@
+FROM node:22
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY .env.development .env
+COPY . . 
+
+ENV PRISMA_CLIENT_OUTPUT="../src/generated/prisma"
+
+RUN npm run prisma:generate:dev
+
+ENV PORT=5000
+
+EXPOSE 5000
+
+CMD ["npm", "run", "dev"]

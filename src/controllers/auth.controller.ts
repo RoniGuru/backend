@@ -8,18 +8,26 @@ export class AuthController {
   login = async (req: Request, res: Response) => {
     try {
       const details: UserDto = req.body;
-      console.log('logging ins', details);
+      console.log('logging ins', details.name);
 
       const response = await this.authService.login(details);
 
       if (response.success && response.user) {
         const cookieMaxAge =
           response.user.refresh_token_expiry!.getTime() - Date.now();
+
         res.cookie('refresh_token', response.user.refresh_token, {
           httpOnly: true,
-          sameSite: 'strict',
+          sameSite: 'none',
           maxAge: cookieMaxAge,
+          path: '/',
+          secure: true,
         });
+
+        console.log(
+          'Setting refresh token cookie:',
+          response.user.refresh_token ? 'Success' : 'Failed'
+        );
 
         const accessToken = this.authService.generateAccessToken({
           name: response.user.name,
@@ -59,30 +67,6 @@ export class AuthController {
     } else {
       return res.status(400).json(result.error);
     }
-  };
-
-  token = async (req: Request, res: Response) => {
-    if (req.cookies.refresh_token == null) {
-      return res.status(401).json({ error: 'no refresh token' });
-    }
-    const user = await this.authService.findUser(Number(req.params.id));
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    if (req.cookies.refreshToken != user.refresh_token) {
-      return res.status(401).json({ error: 'refresh token  not similar' });
-    }
-
-    const newToken = this.authService.generateAccessToken({
-      name: user.name,
-      id: user.id,
-    });
-
-    return res.status(200).json({
-      message: 'Token refreshed',
-      token: newToken,
-    });
   };
 
   logout = async (req: Request, res: Response) => {
