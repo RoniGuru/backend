@@ -1,6 +1,7 @@
 import { UserService } from '../services/user.service';
 import { UpdateUserDto } from '../types/user';
 import { Request, Response } from 'express';
+import bcrypt from 'bcrypt';
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -33,7 +34,15 @@ export class UserController {
       const id = Number(req.params.id);
       const response = await this.userService.getUser(id);
       //if user found
-      if (response) {
+      if (response && response.password && details.password) {
+        //password compare
+        const compare = bcrypt.compare(details.password, response.password);
+        if (!compare) {
+          return res
+            .status(400)
+            .json({ error: 'unable to update user invalid password' });
+        }
+
         const update = await this.userService.updateUser(id, details);
         //if update didnt work
         if (!update) {

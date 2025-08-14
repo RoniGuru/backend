@@ -13,4 +13,5 @@ export interface userData {
   name: string;
   high_score: number;
   created_at: Date;
+  password?: string;
 }
