@@ -36,7 +36,10 @@ export class UserController {
       //if user found
       if (response && response.password && details.password) {
         //password compare
-        const compare = bcrypt.compare(details.password, response.password);
+        const compare = await bcrypt.compare(
+          details.password,
+          response.password
+        );
         if (!compare) {
           return res
             .status(400)
