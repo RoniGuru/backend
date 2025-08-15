@@ -35,7 +35,9 @@ export class UserController {
       const response = await this.userService.getUser(id);
       //high score change
       if (response && response.high_score) {
-        const update = await this.userService.updateUser(id, details);
+        const update = await this.userService.updateUser(id, {
+          high_score: details.high_score,
+        });
         //if update didnt work
         if (!update) {
           return res.status(404).json({ error: 'unable to update user' });
@@ -61,8 +63,19 @@ export class UserController {
             .status(400)
             .json({ error: 'unable to update user invalid password' });
         }
+        let update = null;
+        //password
+        if (details.new_password) {
+          update = await this.userService.updateUser(id, {
+            password: details.new_password,
+          });
+        } else {
+          //name
+          update = await this.userService.updateUser(id, {
+            name: details.name,
+          });
+        }
 
-        const update = await this.userService.updateUser(id, details);
         //if update didnt work
         if (!update) {
           return res.status(404).json({ error: 'unable to update user' });

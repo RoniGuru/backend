@@ -108,6 +108,7 @@ export class AuthService {
       const result = await this.userRepository.create({
         name: registerDetails.name,
         password: hashedPassword,
+        high_score: 0,
       });
       console.log(result);
       if (result) {
