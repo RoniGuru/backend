@@ -11,8 +11,22 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   const refreshToken = req.cookies.refresh_token;
+  const currentDate = new Date();
+  const datetime =
+    'Last Sync: ' +
+    currentDate.getDate() +
+    '/' +
+    (currentDate.getMonth() + 1) +
+    '/' +
+    currentDate.getFullYear() +
+    ' @ ' +
+    currentDate.getHours() +
+    ':' +
+    currentDate.getMinutes() +
+    ':' +
+    currentDate.getSeconds();
 
-  console.log('🔐 AUTH MIDDLEWARE START');
+  console.log('🔐 AUTH MIDDLEWARE START', datetime);
   console.log('📨 Request URL:', req.method, req.path);
   console.log('🎫 Access Token Present:', !!token);
   console.log('🔄 Refresh Token Present:', !!refreshToken);

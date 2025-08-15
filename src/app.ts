@@ -11,7 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    exposedHeaders: ['Authorization'],
+    exposedHeaders: ['Authorization', 'authorization'],
     origin: process.env.FRONTEND_URL,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
