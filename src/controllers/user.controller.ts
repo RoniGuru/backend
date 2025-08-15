@@ -33,8 +33,24 @@ export class UserController {
       const details: Partial<UpdateUserDto> = req.body;
       const id = Number(req.params.id);
       const response = await this.userService.getUser(id);
-      //if user found
-      if (response && response.password && details.password) {
+      //high score change
+      if (response && response.high_score) {
+        const update = await this.userService.updateUser(id, details);
+        //if update didnt work
+        if (!update) {
+          return res.status(404).json({ error: 'unable to update user' });
+        }
+        return res.status(200).json({
+          user: {
+            id: update.id,
+            name: update.name,
+            created_at: update.created_at,
+            high_score: update.high_score,
+          },
+        });
+      }
+      //password or name change
+      else if (response && response.password && details.password) {
         //password compare
         const compare = await bcrypt.compare(
           details.password,
