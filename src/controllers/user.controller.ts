@@ -34,7 +34,8 @@ export class UserController {
       const id = Number(req.params.id);
       const response = await this.userService.getUser(id);
       //high score change
-      if (response && response.high_score) {
+      if (response && details.high_score) {
+        console.log('score update');
         const update = await this.userService.updateUser(id, {
           high_score: details.high_score,
         });
@@ -45,7 +46,7 @@ export class UserController {
         return res.status(200).json({
           user: {
             id: update.id,
-            name: update.name,
+            username: update.username,
             created_at: update.created_at,
             high_score: update.high_score,
           },
@@ -66,14 +67,20 @@ export class UserController {
         let update = null;
         //password
         if (details.new_password) {
+          const salt = Number(process.env.SALT);
+          //hash password
+          const hashedpassword = await bcrypt.hash(details.new_password, salt);
+
           update = await this.userService.updateUser(id, {
-            password: details.new_password,
+            password: hashedpassword,
           });
+          console.log('change password', update);
         } else {
           //name
           update = await this.userService.updateUser(id, {
-            name: details.name,
+            username: details.username,
           });
+          console.log('change username', update);
         }
 
         //if update didnt work
@@ -83,7 +90,7 @@ export class UserController {
         return res.status(200).json({
           user: {
             id: update.id,
-            name: update.name,
+            username: update.username,
             created_at: update.created_at,
             high_score: update.high_score,
           },

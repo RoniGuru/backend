@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 export class AuthService {
   constructor(private userRepository: UserRepository) {}
 
-  generateAccessToken(userData: { name: string; id: number }) {
+  generateAccessToken(userData: { username: string; id: number }) {
     if (!process.env.ACCESS_TOKEN_SECRET) {
       throw new Error('ACCESS TOKEN SECRETe is not defined');
     }
@@ -16,7 +16,7 @@ export class AuthService {
     });
   }
 
-  generateRefreshToken(userData: { name: string; id: number }) {
+  generateRefreshToken(userData: { username: string; id: number }) {
     if (!process.env.REFRESH_TOKEN_SECRET) {
       throw new Error('REFRESH TOKEN SECRET variable is not defined');
     }
@@ -40,7 +40,7 @@ export class AuthService {
   async login(loginDetails: UserDto) {
     try {
       const existingUser = await this.userRepository.findByName(
-        loginDetails.name
+        loginDetails.username
       );
       if (!existingUser) {
         return {
@@ -56,7 +56,7 @@ export class AuthService {
 
       if (compare) {
         const refreshToken = this.generateRefreshToken({
-          name: existingUser.name,
+          username: existingUser.username,
           id: existingUser.id,
         });
         const update = await this.userRepository.update(existingUser.id, {
@@ -68,7 +68,7 @@ export class AuthService {
           success: true,
           user: {
             id: existingUser.id,
-            name: existingUser.name,
+            username: existingUser.username,
             high_score: existingUser.high_score,
             refresh_token: refreshToken,
             refresh_token_expiry: update?.refresh_token_expiry,
@@ -93,20 +93,20 @@ export class AuthService {
   async register(registerDetails: UserDto): Promise<AuthResponse> {
     try {
       const existingUser = await this.userRepository.findByName(
-        registerDetails.name
+        registerDetails.username
       );
 
       if (existingUser) {
         return {
           success: false,
-          error: 'User already exists with this name',
+          error: 'User already exists with this username',
         };
       }
 
       const hashedPassword = await this.hash(registerDetails.password);
 
       const result = await this.userRepository.create({
-        name: registerDetails.name,
+        username: registerDetails.username,
         password: hashedPassword,
         high_score: 0,
       });

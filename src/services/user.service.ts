@@ -9,7 +9,7 @@ export class UserService {
     if (user) {
       const userData = {
         id: user.id,
-        name: user.name,
+        username: user.username,
         created_at: user.created_at,
         high_score: user.high_score,
         password: user.password,

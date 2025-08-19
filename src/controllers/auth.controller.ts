@@ -8,7 +8,7 @@ export class AuthController {
   login = async (req: Request, res: Response) => {
     try {
       const details: UserDto = req.body;
-      console.log('logging ins', details.name);
+      console.log('logging ins', details.username);
 
       const response = await this.authService.login(details);
 
@@ -30,13 +30,13 @@ export class AuthController {
         );
 
         const accessToken = this.authService.generateAccessToken({
-          name: response.user.name,
+          username: response.user.username,
           id: response.user.id,
         });
 
         const userData = {
           id: response.user.id,
-          name: response.user.name,
+          username: response.user.username,
           high_score: response.user.high_score,
           created_at: response.user.created_at,
         };

@@ -15,9 +15,9 @@ export class UserRepository {
     });
   }
 
-  async findByName(name: string): Promise<User | null> {
+  async findByName(username: string): Promise<User | null> {
     return await this.client.user.findFirst({
-      where: { name },
+      where: { username },
     });
   }
 
@@ -38,7 +38,7 @@ export class UserRepository {
     return await prisma.user.findMany({
       select: {
         id: true,
-        name: true,
+        username: true,
         high_score: true,
       },
       where: { high_score: { gt: 0 } },
