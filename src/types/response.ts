@@ -8,12 +8,12 @@ export interface AuthResponse {
 declare global {
   namespace Express {
     interface Request {
-      user?: { name: string; id: number }; // or use a more specific type
+      user?: { username: string; id: number }; // or use a more specific type
     }
   }
 }
 
 export interface jwtUserPayload {
-  name: string;
+  username: string;
   id: number;
 }

@@ -47,10 +47,10 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
         refreshTokenSecret
       ) as jwtUserPayload;
 
-      console.log('✅ Refresh token valid for user:', decoded.name);
+      console.log('✅ Refresh token valid for user:', decoded.username);
 
       const newAccessToken = jwt.sign(
-        { id: decoded.id, name: decoded.name },
+        { id: decoded.id, username: decoded.username },
         accessTokenSecret,
         { expiresIn: '2hr' }
       );
@@ -87,7 +87,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   console.log('🔍 Verifying access token...');
   try {
     const decoded = jwt.verify(token, accessTokenSecret) as jwtUserPayload;
-    console.log('✅ ACCESS TOKEN VALID for user:', decoded.name);
+    console.log('✅ ACCESS TOKEN VALID for user:', decoded.username);
     req.user = decoded;
     return next();
   } catch (error) {
